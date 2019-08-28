@@ -6,11 +6,17 @@ import (
 	"fmt"
 	"github.com/ouqiang/supervisor-event-listener/event"
 	"github.com/ouqiang/supervisor-event-listener/utils/httpclient"
+	"strings"
 )
 
 type WebHook struct{}
 
 func (hook *WebHook) Send(message event.Message) error {
+	if strings.Contains(Conf.WebHook.Url, "oapi.dingtalk.com") {
+		ding := &DingRobot{}
+		return ding.Send(message)
+	}
+
 	encodeMessage, err := json.Marshal(message)
 	if err != nil {
 		return err
